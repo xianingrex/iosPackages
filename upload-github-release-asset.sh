@@ -56,6 +56,15 @@ echo "creating release... "
 ADD_RELEASE="$GH_API/repos/$owner/$repo/releases"
 curl -H "Authorization: token $github_api_token" -H "Content-Type:application/json" -X POST --data "{\"tag_name\": \"$tag\",\"target_commitish\": \"master\",\"name\": \"$tag\",\"body\": \"UFTM$tag release\",\"draft\": false,\"prerelease\": false}" $ADD_RELEASE
 
+# Get ID of the asset based on given filename.
+eval $(echo "$response" | grep -m 1 "id.:" | grep -w id | tr : = | tr -cd '[[:alnum:]]=')
+[ "$id" ] || { echo "Error: Failed to get release id for tag: $tag"; echo "$response" | awk 'length($0)<100' >&2; exit 1; }
+
+# Create a release
+echo "creating release... "
+ADD_RELEASE="$GH_API/repos/$owner/$repo/releases"
+curl -H "Authorization: token $github_api_token" -H "Content-Type:application/json" -X POST --data "{\"tag_name\": \"$tag\",\"target_commitish\": \"master\",\"name\": \"$tag\",\"body\": \"UFTM$tag release\",\"draft\": false,\"prerelease\": false}" $ADD_RELEASE
+
 # Upload asset
 echo "Uploading asset... "
 
