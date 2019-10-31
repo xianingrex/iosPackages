@@ -1,0 +1,1 @@
+Tool for assembly iOS packager assets for every UFTM release and patch.
